@@ -84,7 +84,58 @@ docker push jimeenx9/nginx-2048:latest
 
 ---
 
-# 4️⃣ Desplegar en AWS
+## 4️⃣ Automatización CI/CD con GitHub Actions
+
+Para evitar construir y subir la imagen manualmente cada vez, se configura un workflow de **GitHub Actions** que:
+
+1. Descarga el repositorio
+2. Construye la imagen Docker
+3. La publica automáticamente en Docker Hub (latest)
+
+Cada vez que se haga `git push` a `main`, la imagen se actualizará sola.
+
+---
+
+### 📄 Workflow creado
+
+Ruta del archivo:
+
+```
+.github/workflows/docker-image.yml
+```
+
+Contenido:
+
+```yaml
+name:BuildandPushDockerimageon:push:branches: ["main" ]jobs:docker:runs-on:ubuntu-lateststeps:-name:Descargarrepouses:actions/checkout@v4-name:LoginenDockerHubuses:docker/login-action@v3with:username:${{secrets.DOCKER_USERNAME}}password:${{secrets.DOCKER_PASSWORD}}-name:Construirimagenrun:dockerbuild-tjimeenx9/nginx-2048:latest.-name:Subirimagenrun:dockerpushjimeenx9/nginx-2048:latest
+```
+
+---
+
+### 🔐 Secrets configurados
+
+En **Settings → Secrets → Actions**
+
+- `DOCKER_USERNAME`
+- `DOCKER_PASSWORD` (token de Docker Hub)
+
+---
+
+![Texto](./img/secrets.png)
+
+### ⚙️ Ejecución automática del workflow
+
+Al hacer push al repositorio:
+
+![Texto](./img/actions-run.png)
+
+---
+
+### 📦 Imagen actualizada automáticamente en Docker Hub
+
+![Texto](./img/actualizado.png)
+
+# 5️⃣ Desplegar en AWS
 
 Se crea una instancia **Ubuntu t3.micro** con:
 
@@ -96,7 +147,7 @@ Se crea una instancia **Ubuntu t3.micro** con:
 
 ---
 
-# 5️⃣ Levantar contenedor manualmente
+# 6️⃣ Levantar contenedor manualmente
 
 ```bash
 docker run -d -p 80:80 --name web2048 jimeenx9/nginx-2048:1.0
@@ -109,7 +160,7 @@ docker ps
 
 ---
 
-# 6️⃣ Automatizar despliegue con Docker Compose
+# 7️⃣ Automatizar despliegue con Docker Compose
 
 Creamos `docker-compose.yml`
 
@@ -122,7 +173,7 @@ services:web:image:jimeenx9/nginx-2048:1.0container_name:web2048ports:-"80:80"re
 
 ---
 
-# 7️⃣ Aplicación funcionando
+# 8️⃣ Aplicación funcionando
 
 Accedemos desde el navegador:
 
